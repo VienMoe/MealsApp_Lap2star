@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   FlatList,
   View,
@@ -13,6 +13,7 @@ import {
   createStackNavigator,
   StackNavigationProp,
 } from "@react-navigation/stack";
+import ThemeContext from "../context/ThemeContext";
 
 // Define the type for each category item
 interface Category {
@@ -53,6 +54,9 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
       <Text
         style={{
           textAlign: "center",
+          fontSize: 18,
+          fontWeight: "bold",
+          marginVertical: 2,
         }}
       >
         {title}
@@ -62,6 +66,11 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
 );
 
 export default function CategoriesScreen() {
+  const { categoriesBackground } = useContext(ThemeContext) || {};
+
+  if (!categoriesBackground) {
+    return null; // handle the case where context is not available
+  }
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const renderGridItem = ({ item }: { item: Category }) => {
@@ -80,6 +89,7 @@ export default function CategoriesScreen() {
       renderItem={renderGridItem}
       numColumns={2}
       keyExtractor={(item) => item.id}
+      contentContainerStyle={{ backgroundColor: categoriesBackground }}
     />
   );
 }
@@ -89,9 +99,10 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 15,
     height: 150,
-    backgroundColor: "orange",
     borderRadius: 10,
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#fff",
   },
   image: {
     width: "100%",

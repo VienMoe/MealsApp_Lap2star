@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import ThemeContext from "../context/ThemeContext";
 import {
   useRoute,
   RouteProp,
@@ -25,7 +26,11 @@ export default function MealsScreen() {
   const route = useRoute<MealsScreenRouteProp>();
   const navigation = useNavigation<MealsScreenNavigationProp>();
   const { categoryId } = route.params;
+  const { mealsBackground } = useContext(ThemeContext) || {}; // Get the background color from context
 
+  if (!mealsBackground) {
+    return null; // Handle the case where context is not available
+  }
   // Fake data for meals
   const MEALS = [
     {
@@ -83,7 +88,10 @@ export default function MealsScreen() {
   return (
     <View style={styles.container}>
       {mealsToShow.map((meal) => (
-        <View key={meal.id} style={styles.mealItem}>
+        <View
+          key={meal.id}
+          style={[styles.mealItem, { backgroundColor: mealsBackground }]}
+        >
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("MealDetail", { mealId: meal.id })
@@ -109,7 +117,6 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 10,
     overflow: "hidden",
-    backgroundColor: "orange",
   },
   image: {
     width: 400,
